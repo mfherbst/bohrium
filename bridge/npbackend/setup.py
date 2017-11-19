@@ -44,6 +44,12 @@ parser.add_argument(
     default="",
     help='OpenMP flag for the Cython builds'
 )
+parser.add_argument(
+    '--swig-executable',
+    default=None,
+    help="SWIG executable for Swig builds"
+)
+
 (args_extra, argv) = parser.parse_known_args()
 sys.argv = [sys.argv[0]] + argv  # Write the remaining arguments back to `sys.argv` for distutils to read
 
@@ -171,6 +177,13 @@ class CustomBuild(build):
             self.copy_file(buildpath('bhc.py'),   buildpath(self.build_lib, 'bohrium', 'bhc.py'))
         build.run(self)
 
+
+class CustomBuildExt(build_ext):
+    def initialize_options(self):
+        build_ext.initialize_options(self)
+        self.swig = args_extra.swig_executable
+
+
 # We need the pyx files in the build path for the Cython.Distutils to work
 shutil.copy2(srcpath('bohrium', 'random123.pyx'), buildpath('random123.pyx'))
 shutil.copy2(srcpath('bohrium', 'bhary.pyx'),     buildpath('bhary.pyx'))
@@ -184,6 +197,7 @@ except OSError:
 
 shutil.copy2(srcpath('bohrium', 'nobh', 'bincount_cython.pyx'), buildpath('nobh', 'bincount_cython.pyx'))
 
+
 setup(
     name='Bohrium',
     version=_version,
@@ -194,7 +208,7 @@ setup(
     url='http://www.bh107.org',
     license='LGPLv3',
     platforms='Linux, OSX',
-    cmdclass={'build': CustomBuild, 'build_ext': build_ext},
+    cmdclass={'build': CustomBuild, 'build_ext': CustomBuildExt},
     package_dir={'bohrium': srcpath('bohrium')},
     packages=['bohrium', 'bohrium.target', 'bohrium.nobh'],
     ext_package='bohrium',

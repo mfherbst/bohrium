@@ -31,7 +31,8 @@ if(PYTHONINTERP_FOUND AND NUMPY_FOUND AND SWIG_FOUND AND CYTHON_FOUND AND NUMPY_
     # Generate distutils package and install it
     add_custom_target(
         bhpy ALL
-        COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/setup.py build_ext --include-dirs=${NUMPY_INCLUDE_DIRS} --buildpath=${CMAKE_CURRENT_BINARY_DIR} ${OPENMP_ARG} && ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/setup.py install --install-platlib=${CMAKE_CURRENT_BINARY_DIR}/platlib
+        COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/setup.py build_ext --include-dirs=${NUMPY_INCLUDE_DIRS} --buildpath=${CMAKE_CURRENT_BINARY_DIR} ${OPENMP_ARG} --swig-executable=${SWIG_EXECUTABLE}
+        COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/setup.py install --install-platlib=${CMAKE_CURRENT_BINARY_DIR}/platlib
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         DEPENDS bhc
     )
